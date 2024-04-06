@@ -24,45 +24,42 @@ bool isPrime(int val){
 	}
 	return true;
 }
-void solve(int N,vector<char> arr,char ch)
+bool solve(int N,vector<int> arr)
 {
-	
-	vector<int> a1;
-	for(int i = 0;i < N;++i){
-		if (arr[i] != ch){
-			a1.push_back(i+1);
+	int bkp = -1;
+	int lower = INT_MIN;
+	int upper = -1;
+	for(int i = 0;i < N-1;++i){
+		if (arr[i] > arr[i+1]){
+			bkp = i;
+			lower = (arr[i] - arr[i+1]);
+			if (i+2 < N){
+				upper = (arr[i+2] - arr[i+1]);
+
+			}
+			break;
 		}
 	}
-	int cnt = 0;
-	bool lst = false;
-	for(auto val : a1){
-		if (val == N){
-			cnt++;
-			lst = true;
+	if (bkp == -1 || bkp == N-2){
+		return true;
+	}
+	int i = bkp+2;
+	while(i < N-1){
+		if (arr[i] > arr[i+1]){
+			lower = max(lower,arr[i] - arr[i+1]);
+			if (i+2 < N){
+				upper = min(upper,arr[i+2] - arr[i+1]);
+			}
+			i = i+2;
 		}else{
-			cnt = 1;
+			i++;
 		}
+
 	}
-	if (cnt == 0){
-		cout << 0 << endl;
-		return;
+	if (lower > upper){
+		return false;
 	}
-	if (cnt == 1 && lst){
-		cout << 1 << endl;
-		cout << N-1 << endl;
-		return;
-	}
-	if (cnt == 1){
-		cout << 1 << endl;
-		cout << N << endl;
-		return;
-	}
-	if (cnt == 2){
-		cout << 2 << endl;
-		cout << N-1 << " " << N << endl;
-		return;
-	}
-	return;
+	return true;
 }
 
 int main(){
@@ -74,14 +71,13 @@ int main(){
 	{
 		int N;
 		cin >> N;
-		char ch;
-		cin >> ch;
-		vector<char> arr(N);
+		
+		vector<int> arr(N);
 		for(int i = 0;i < N;++i){
 			cin >> arr[i];
 		}
 		
-		solve(N,arr,ch);
+		cout<< (solve(N,arr) ? "Yes":"No") << endl;
 	}
 	return 0;
 }
